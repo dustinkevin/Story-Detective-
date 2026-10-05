@@ -55,9 +55,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-2 sm:py-6 flex flex-col justify-between min-h-[calc(100dvh-58px)] sm:min-h-[calc(100vh-65px)]">
+    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-1.5 sm:py-4 md:py-6 flex flex-col justify-between h-[calc(100dvh-46px)] sm:min-h-[calc(100vh-65px)]">
       {/* Top Card: Question Header & Big Text */}
-      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border-2 border-indigo-200 shadow-md my-auto flex flex-col justify-between">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-8 border-2 border-indigo-200 shadow-md my-auto flex flex-col justify-between landscape:max-h-[calc(100dvh-100px)] landscape:overflow-y-auto">
         <div>
           {/* Question badge & audio */}
           <div className="flex items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-indigo-100">

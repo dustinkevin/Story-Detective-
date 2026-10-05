@@ -26,63 +26,63 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onReset,
 }) => {
   return (
-    <header className="sticky top-0 z-30 bg-amber-50/95 backdrop-blur-md border-b border-amber-200/80 px-4 py-2.5 shadow-xs">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-30 bg-amber-50/95 backdrop-blur-md border-b border-amber-200/80 px-2.5 sm:px-4 py-1.5 sm:py-2.5 shadow-xs shrink-0">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-2">
         {/* Zone 1: Brand title */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white shadow-xs">
-            <Search className="w-4 h-4" />
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white shadow-xs shrink-0">
+            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </div>
           <div>
-            <span className="font-story font-bold text-lg md:text-xl text-amber-950 tracking-tight flex items-center gap-1.5">
+            <span className="font-story font-bold text-base sm:text-xl text-amber-950 tracking-tight flex items-center gap-1">
               Story Detective!
             </span>
           </div>
         </div>
 
         {/* Zone 2: Navigation & Progress */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {currentScreen === 'story' && (
-            <div className="flex items-center gap-2 bg-amber-100/70 border border-amber-300/60 px-3 py-1 rounded-full text-xs font-semibold text-amber-900">
-              <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+            <div className="flex items-center gap-1 sm:gap-2 bg-amber-100/70 border border-amber-300/60 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold text-amber-900">
+              <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-700" />
               <span>Page {currentPage} of {totalPages}</span>
             </div>
           )}
 
           {currentScreen === 'question' && (
-            <div className="flex items-center gap-2 bg-indigo-100/80 border border-indigo-300/60 px-3 py-1 rounded-full text-xs font-semibold text-indigo-900">
-              <span>Detective Question</span>
+            <div className="flex items-center gap-1 sm:gap-2 bg-indigo-100/80 border border-indigo-300/60 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold text-indigo-900">
+              <span>Question</span>
             </div>
           )}
 
           {currentScreen === 'retell' && (
-            <div className="flex items-center gap-2 bg-emerald-100/80 border border-emerald-300/60 px-3 py-1 rounded-full text-xs font-semibold text-emerald-900">
-              <span>Story Retelling</span>
+            <div className="flex items-center gap-1 sm:gap-2 bg-emerald-100/80 border border-emerald-300/60 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold text-emerald-900">
+              <span>Retelling</span>
             </div>
           )}
 
           {currentScreen === 'result' && (
-            <div className="flex items-center gap-2 bg-yellow-100 border border-yellow-300 px-3 py-1 rounded-full text-xs font-semibold text-yellow-900">
-              <Award className="w-3.5 h-3.5 text-yellow-700" />
-              <span>Case Solved</span>
+            <div className="flex items-center gap-1 sm:gap-2 bg-yellow-100 border border-yellow-300 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold text-yellow-900">
+              <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-yellow-700" />
+              <span>Solved</span>
             </div>
           )}
         </div>
 
         {/* Zone 3: Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {/* Clue Bag Button */}
           <button
             onClick={() => {
               sounds.playTapSound();
               onOpenNotebook();
             }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-bold text-amber-950 shadow-xs hover:bg-amber-100/80 transition-colors"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-white border border-amber-300 text-[11px] sm:text-xs font-bold text-amber-950 shadow-xs hover:bg-amber-100/80 transition-colors cursor-pointer"
             title="Open Detective Notebook"
           >
-            <span className="text-sm">🔍</span>
+            <span className="text-xs sm:text-sm">🔍</span>
             <span className="hidden sm:inline">Clue Bag:</span>
-            <span className="bg-amber-600 text-white px-1.5 py-0.5 rounded text-[11px]">
+            <span className="bg-amber-600 text-white px-1 sm:px-1.5 py-0.5 rounded text-[10px] sm:text-[11px]">
               {cluesCollectedCount}/{totalCluesCount}
             </span>
           </button>
@@ -93,10 +93,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               sounds.playTapSound();
               onToggleMute();
             }}
-            className="p-1.5 rounded-lg border border-amber-300/70 bg-white text-amber-900 hover:bg-amber-100/80 transition-colors"
+            className="p-1 sm:p-1.5 rounded-lg border border-amber-300/70 bg-white text-amber-900 hover:bg-amber-100/80 transition-colors cursor-pointer"
             title={isMuted ? 'Unmute sounds' : 'Mute sounds'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-amber-600" /> : <Volume2 className="w-4 h-4 text-amber-800" />}
+            {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-800" />}
           </button>
 
           {/* Restart */}
@@ -108,10 +108,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   onReset();
                 }
               }}
-              className="p-1.5 rounded-lg border border-amber-300/70 bg-white text-amber-800 hover:bg-amber-100/80 transition-colors"
+              className="p-1 sm:p-1.5 rounded-lg border border-amber-300/70 bg-white text-amber-800 hover:bg-amber-100/80 transition-colors cursor-pointer"
               title="Restart story"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           )}
         </div>
