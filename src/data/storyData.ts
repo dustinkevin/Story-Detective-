@@ -5,12 +5,21 @@ import {
   StoryPage,
 } from '../types';
 
-export const coverImage = '/src/assets/images/story_detective_cover_1791216609635.jpg';
-export const yardSceneImage = '/src/assets/images/story_yard_modern_emma_1791219276429.jpg';
-export const bakerySceneImage = '/src/assets/images/story_bakery_modern_emma_1791219293826.jpg';
-export const crosswalkSceneImage = '/src/assets/images/story_page4_sam_stop_park_1791220510064.jpg';
-export const parkBridgeSceneImage = '/src/assets/images/story_park_modern_emma_1791219327333.jpg';
-export const bridgeDiscoverySceneImage = '/src/assets/images/story_bridge_rescue_emma_1791219340162.jpg';
+import coverImage from '../assets/images/story_detective_cover_1791216609635.jpg';
+import yardSceneImage from '../assets/images/story_yard_modern_emma_1791219276429.jpg';
+import bakerySceneImage from '../assets/images/story_bakery_modern_emma_1791219293826.jpg';
+import crosswalkSceneImage from '../assets/images/story_page4_sam_stop_park_1791220510064.jpg';
+import parkBridgeSceneImage from '../assets/images/story_park_modern_emma_1791219327333.jpg';
+import bridgeDiscoverySceneImage from '../assets/images/story_bridge_rescue_emma_1791219340162.jpg';
+
+export {
+  coverImage,
+  yardSceneImage,
+  bakerySceneImage,
+  crosswalkSceneImage,
+  parkBridgeSceneImage,
+  bridgeDiscoverySceneImage,
+};
 
 export const predictionQuestion = {
   prompt: 'Where do you think Coco went?',
