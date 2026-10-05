@@ -1,0 +1,6 @@
+{
+  "name": "Story Detective! - Where Is Coco?",
+  "description": "Interactive English picture-book mystery app for Grade 5–6 learners to read clues, answer questions, and retell the story.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
