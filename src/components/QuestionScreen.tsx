@@ -32,7 +32,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       setFeedbackState('correct');
       setShowHint(false); // Hide hint once correct
       sounds.playSuccessSound();
-      sounds.speak('Nice clue! Great job!');
+      sounds.speak('Good job!');
     } else {
       setFeedbackState('incorrect');
       setShowHint(true);
@@ -137,7 +137,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 <div>
                   <div className="font-bold text-xs sm:text-sm text-emerald-900 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-emerald-600" />
-                    <span>Nice clue! You solved this question!</span>
+                    <span>Good job! You solved this question!</span>
                   </div>
                   <div className="text-[11px] sm:text-xs text-emerald-800 mt-0.5">
                     {question.explanation}

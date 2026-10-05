@@ -99,14 +99,12 @@ export default function App() {
     sounds.stopSpeech();
     setActiveQuestion(null);
 
-    // If question was after Page 7, advance to Page 8
-    if (currentPage.pageNumber === 7) {
-      setCurrentPageIndex(7);
-      setCurrentScreen('story');
-    } else {
-      // Advance to the next page
+    // If this was question after page 7, moving forward goes to Page 8
+    if (currentPageIndex < totalPages - 1) {
       setCurrentPageIndex((prev) => prev + 1);
       setCurrentScreen('story');
+    } else {
+      setCurrentScreen('retell');
     }
   };
 
@@ -182,25 +180,27 @@ export default function App() {
 
         {currentScreen === 'result' && (
           <ResultScreen
-            cluesCount={allClueCards.length}
+            cluesCount={collectedClueIds.length}
             totalClues={allClueCards.length}
             onReadAgain={handleResetStory}
           />
         )}
       </main>
 
-      {/* Vocabulary Helper Modal */}
-      <VocabModal
-        wordData={selectedWord}
-        onClose={() => setSelectedWord(null)}
-      />
+      {/* Global Vocabulary Meaning Modal */}
+      {selectedWord && (
+        <VocabModal
+          wordData={selectedWord}
+          onClose={() => setSelectedWord(null)}
+        />
+      )}
 
-      {/* Detective Notebook / Clue Bag Modal */}
+      {/* Global Detective Notebook Clue Bag Modal */}
       <DetectiveNotebookModal
         isOpen={isNotebookOpen}
-        onClose={() => setIsNotebookOpen(false)}
         allClues={allClueCards}
         collectedClueIds={collectedClueIds}
+        onClose={() => setIsNotebookOpen(false)}
       />
     </div>
   );

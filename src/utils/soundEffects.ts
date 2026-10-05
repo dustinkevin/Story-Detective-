@@ -1,63 +1,11 @@
 /**
  * Sound effects and speech synthesis for Story Detective
- * Robust mobile compatibility for iOS Safari, Android Chrome, Samsung Internet & Desktop
+ * Pure client-side Web Audio API and Web Speech API without network lag
  */
 
 class SoundManager {
   private ctx: AudioContext | null = null;
   public isMuted: boolean = false;
-  private isUnlocked: boolean = false;
-  // Permanent reference array to prevent WebKit / iOS Safari garbage collection
-  private activeUtterances: SpeechSynthesisUtterance[] = [];
-
-  constructor() {
-    if (typeof window !== 'undefined') {
-      const unlock = () => {
-        this.unlockAudio();
-      };
-      window.addEventListener('touchstart', unlock, { passive: true });
-      window.addEventListener('touchend', unlock, { passive: true });
-      window.addEventListener('click', unlock, { passive: true });
-    }
-  }
-
-  // Force unlock audio & speech synthesis on user interaction
-  public unlockAudio() {
-    if (this.isUnlocked) return;
-    this.isUnlocked = true;
-
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtx) {
-        if (!this.ctx) {
-          this.ctx = new AudioCtx();
-        }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-        // Play silent oscillator to wake up iOS hardware audio session
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        gain.gain.value = 0.001;
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(0);
-        osc.stop(this.ctx.currentTime + 0.01);
-      }
-    } catch {
-      // ignore
-    }
-
-    try {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.resume();
-      }
-    } catch {
-      // ignore
-    }
-  }
 
   private getAudioContext(): AudioContext | null {
     if (this.isMuted) return null;
@@ -79,7 +27,6 @@ class SoundManager {
 
   // Soft tap click
   playTapSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -101,7 +48,6 @@ class SoundManager {
 
   // Page turn whoosh
   playPageFlipSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -123,7 +69,6 @@ class SoundManager {
 
   // Clue discovered magical bell chime
   playClueFoundSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -147,7 +92,6 @@ class SoundManager {
 
   // Question correct celebration chime
   playSuccessSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -171,7 +115,6 @@ class SoundManager {
 
   // Gentle nudge sound on incorrect answer
   playTryAgainSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -193,7 +136,6 @@ class SoundManager {
 
   // Case solved grand fanfare
   playFanfareSound() {
-    this.unlockAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -223,85 +165,46 @@ class SoundManager {
     }
   }
 
-  // Reliable Speech Synthesis across mobile and desktop
-  speak(text: string, onEnd?: () => void, rate: number = 0.9) {
+  // Web Speech API text-to-speech (Instant client-side synthesis)
+  speak(text: string, onEnd?: () => void, rate: number = 0.88) {
     if (this.isMuted) {
       if (onEnd) onEnd();
       return;
     }
-
-    // Wake audio session synchronously
-    this.unlockAudio();
-
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       if (onEnd) onEnd();
       return;
     }
 
     try {
-      // 1. Resume any paused speech engine immediately
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-      }
-
-      // 2. Cancel previous utterance synchronously
       window.speechSynthesis.cancel();
 
-      // 3. Create fresh utterance
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
       utterance.rate = rate;
       utterance.pitch = 1.0;
-      utterance.volume = 1.0;
 
-      // Select English voice if available on system
-      try {
-        const voices = window.speechSynthesis.getVoices();
-        if (voices && voices.length > 0) {
-          const enVoice = voices.find(
-            (v) =>
-              (v.lang === 'en-US' || v.lang === 'en_US' || v.lang.startsWith('en')) &&
-              !v.name.includes('Compact')
-          );
-          if (enVoice) {
-            utterance.voice = enVoice;
-          }
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        const englishVoice = voices.find(
+          (v) =>
+            v.lang.startsWith('en') &&
+            (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha'))
+        );
+        if (englishVoice) {
+          utterance.voice = englishVoice;
         }
-      } catch {
-        // use default
       }
 
-      // Keep strong reference to prevent iOS WebKit garbage collection
-      this.activeUtterances.push(utterance);
-
-      let finished = false;
-      const onDone = () => {
-        if (finished) return;
-        finished = true;
-        // Clean up reference
-        this.activeUtterances = this.activeUtterances.filter((u) => u !== utterance);
+      utterance.onend = () => {
+        if (onEnd) onEnd();
+      };
+      utterance.onerror = () => {
         if (onEnd) onEnd();
       };
 
-      utterance.onend = onDone;
-      utterance.onerror = (e) => {
-        console.warn('Speech error/interrupted:', e);
-        onDone();
-      };
-
-      // 4. Speak SYNCHRONOUSLY within this user event
       window.speechSynthesis.speak(utterance);
-
-      // 5. Fallback safety timer in case onend never fires on iOS
-      const words = text.trim().split(/\s+/).length;
-      const timeoutMs = Math.max(2000, (words / 2.0) * 1000 + 1500);
-      setTimeout(() => {
-        if (!finished) {
-          onDone();
-        }
-      }, timeoutMs);
-    } catch (err) {
-      console.warn('SpeechSynthesis exception:', err);
+    } catch {
       if (onEnd) onEnd();
     }
   }
@@ -314,7 +217,6 @@ class SoundManager {
         // ignore
       }
     }
-    this.activeUtterances = [];
   }
 }
 

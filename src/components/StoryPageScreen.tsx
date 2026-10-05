@@ -11,7 +11,6 @@ import {
   X,
   Lock,
   AlertCircle,
-  VolumeX,
 } from 'lucide-react';
 import { StoryPage, VocabularyWord, ClueHotspot } from '../types';
 import { sounds } from '../utils/soundEffects';
@@ -39,9 +38,8 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
   const [selectedHotspot, setSelectedHotspot] = useState<ClueHotspot | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showClueNeededAlert, setShowClueNeededAlert] = useState(false);
-  const [showMobileAudioTip, setShowMobileAudioTip] = useState(false);
 
-  // Reset alert on page change
+  // Reset state on page change
   useEffect(() => {
     setShowClueNeededAlert(false);
     setIsInvestigating(false);
@@ -86,13 +84,11 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
   const handleReadAloud = () => {
     sounds.playTapSound();
     setIsPlayingAudio(true);
-    setShowMobileAudioTip(true);
 
     sounds.speak(
       page.storyText,
       () => {
         setIsPlayingAudio(false);
-        setTimeout(() => setShowMobileAudioTip(false), 2000);
       },
       0.88
     );
@@ -124,12 +120,12 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-1.5 sm:py-3 flex flex-col justify-between h-[calc(100dvh-46px)] sm:min-h-[calc(100vh-65px)]">
-      {/* 2-Column Storybook Layout (Side-by-side in landscape and on desktop) */}
-      <div className="grid grid-cols-1 md:grid-cols-12 landscape:grid-cols-12 gap-2 sm:gap-4 items-stretch flex-1 min-h-0 my-auto">
-        {/* Left Column: Story Illustration (Height-fitted in landscape) */}
-        <div className="md:col-span-6 lg:col-span-7 landscape:col-span-6 flex flex-col justify-center min-h-0">
-          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-xl border-2 sm:border-4 border-amber-300 bg-amber-100 aspect-16/10 sm:aspect-4/3 max-h-[36vh] landscape:max-h-[calc(100dvh-100px)] md:max-h-none group select-none flex items-center justify-center">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-1.5 sm:py-2.5 flex flex-col justify-between h-[calc(100dvh-46px)] sm:min-h-[calc(100vh-65px)]">
+      {/* 2-Column Storybook Layout (Side-by-side in landscape and desktop) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 landscape:grid-cols-12 gap-2 sm:gap-4 items-center flex-1 min-h-0 my-auto">
+        {/* Left Column: Story Illustration (Preserves exact 4:3 ratio without distortion) */}
+        <div className="md:col-span-6 lg:col-span-7 landscape:col-span-6 flex flex-col items-center justify-center min-h-0 h-full">
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-xl border-2 sm:border-4 border-amber-300 bg-amber-100 aspect-4/3 max-h-[calc(100dvh-105px)] sm:max-h-[50vh] md:max-h-none w-auto max-w-full mx-auto group select-none flex items-center justify-center">
             <img
               src={page.illustration}
               alt={page.illustrationAlt}
@@ -227,7 +223,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Story Text & Interactive Controls (Scrollable if needed in landscape) */}
+        {/* Right Column: Story Text & Interactive Controls */}
         <div className="md:col-span-6 lg:col-span-5 landscape:col-span-6 flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 border-2 border-amber-200/80 shadow-md min-h-0 landscape:max-h-[calc(100dvh-100px)] landscape:overflow-y-auto">
           {/* Top meta row with Location and Chapter */}
           <div>
@@ -256,14 +252,6 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                 <span>{isPlayingAudio ? 'Reading...' : 'Read Aloud'}</span>
               </button>
             </div>
-
-            {/* Mobile Sound Tip if on iPhone/iPad */}
-            {showMobileAudioTip && (
-              <div className="mt-1 px-2 py-1 rounded-lg bg-amber-50 border border-amber-200 text-[10px] text-amber-900 flex items-center gap-1 animate-in fade-in">
-                <span>🔊</span>
-                <span>Playing English audio. (아이폰 무음 모드 스위치가 켜져 있으면 소리가 안 날 수 있습니다)</span>
-              </div>
-            )}
 
             {/* Main story text - responsive font size */}
             <div className="mt-2.5 sm:mt-5">
@@ -354,7 +342,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
       </div>
 
       {/* Screen ② Navigation Footer (Always compact & 100% visible on screen) */}
-      <div className="mt-1.5 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-amber-200/80 flex items-center justify-between gap-2 shrink-0">
+      <div className="mt-1.5 sm:mt-2.5 pt-1.5 sm:pt-2 border-t border-amber-200/80 flex items-center justify-between gap-2 shrink-0">
         {/* Back Button */}
         <button
           onClick={() => {
