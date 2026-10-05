@@ -1,17 +1,75 @@
 /**
  * Sound effects and speech synthesis for Story Detective
- * Uses Web Audio API and Web Speech API without external audio file dependencies
+ * Optimized for desktop and mobile (iOS Safari, Android Chrome/Samsung Internet)
  */
 
 class SoundManager {
   private ctx: AudioContext | null = null;
   public isMuted: boolean = false;
+  private currentUtterance: SpeechSynthesisUtterance | null = null;
+  private isUnlocked: boolean = false;
+
+  constructor() {
+    // Automatically attach one-time unlock listeners for mobile audio & speech
+    if (typeof window !== 'undefined') {
+      const unlock = () => {
+        this.unlockMobileAudio();
+      };
+      window.addEventListener('touchstart', unlock, { once: true, passive: true });
+      window.addEventListener('touchend', unlock, { once: true, passive: true });
+      window.addEventListener('click', unlock, { once: true });
+    }
+  }
+
+  // Mobile Audio & Speech unlocker
+  public unlockMobileAudio() {
+    if (this.isUnlocked) return;
+    this.isUnlocked = true;
+
+    try {
+      // 1. Unlock AudioContext
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        if (!this.ctx) {
+          this.ctx = new AudioCtx();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+        // Play silent buffer to unlock iOS hardware audio output
+        const buffer = this.ctx.createBuffer(1, 1, 22050);
+        const source = this.ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.ctx.destination);
+        source.start(0);
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      // 2. Unlock SpeechSynthesis on iOS / Android
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.resume();
+        // Warm up speech synthesis engine with an empty utterance
+        const silentUtterance = new SpeechSynthesisUtterance('');
+        silentUtterance.volume = 0;
+        window.speechSynthesis.speak(silentUtterance);
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   private getAudioContext(): AudioContext | null {
     if (this.isMuted) return null;
     try {
       if (!this.ctx) {
-        const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        const AudioCtx =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         this.ctx = new AudioCtx();
       }
       if (this.ctx.state === 'suspended') {
@@ -25,6 +83,7 @@ class SoundManager {
 
   // Soft tap click
   playTapSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -46,6 +105,7 @@ class SoundManager {
 
   // Page turn whoosh
   playPageFlipSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -67,6 +127,7 @@ class SoundManager {
 
   // Clue discovered magical bell chime
   playClueFoundSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -90,6 +151,7 @@ class SoundManager {
 
   // Question correct celebration chime
   playSuccessSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -113,6 +175,7 @@ class SoundManager {
 
   // Gentle nudge sound on incorrect answer
   playTryAgainSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -134,6 +197,7 @@ class SoundManager {
 
   // Case solved grand fanfare
   playFanfareSound() {
+    this.unlockMobileAudio();
     const ctx = this.getAudioContext();
     if (!ctx) return;
     try {
@@ -163,51 +227,106 @@ class SoundManager {
     }
   }
 
-  // Web Speech API text-to-speech
+  // Web Speech API text-to-speech with full mobile support
   speak(text: string, onEnd?: () => void, rate: number = 0.88) {
     if (this.isMuted) {
       if (onEnd) onEnd();
       return;
     }
-    if (!('speechSynthesis' in window)) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       if (onEnd) onEnd();
       return;
     }
 
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = rate; // Slightly slower for Grade 5-6 EFL learners
-      utterance.pitch = 1.05;
+    this.unlockMobileAudio();
 
-      const voices = window.speechSynthesis.getVoices();
-      const englishVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha')));
-      if (englishVoice) {
-        utterance.voice = englishVoice;
+    try {
+      // On mobile browsers, if speaking or pending, cancel first with a tiny delay
+      // to prevent iOS Safari from swallowing the new utterance
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel();
+        setTimeout(() => {
+          this.executeSpeech(text, onEnd, rate);
+        }, 50);
+      } else {
+        this.executeSpeech(text, onEnd, rate);
+      }
+    } catch {
+      if (onEnd) onEnd();
+    }
+  }
+
+  private executeSpeech(text: string, onEnd?: () => void, rate: number = 0.88) {
+    try {
+      // Always ensure speech synthesis is not paused
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
       }
 
-      utterance.onend = () => {
-        if (onEnd) onEnd();
-      };
-      utterance.onerror = () => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      this.currentUtterance = utterance; // Prevent garbage collection on iOS Safari
+
+      utterance.lang = 'en-US';
+      utterance.rate = rate; // Comfortable for Grade 5-6 EFL learners
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      // Select high-quality English voice if available on user device
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const englishVoice = voices.find(
+            (v) =>
+              (v.lang.startsWith('en') || v.lang.startsWith('en-US')) &&
+              (v.name.includes('Samantha') ||
+                v.name.includes('Karen') ||
+                v.name.includes('Google') ||
+                v.name.includes('Natural') ||
+                v.default)
+          );
+          if (englishVoice) {
+            utterance.voice = englishVoice;
+          }
+        }
+      } catch {
+        // use system default
+      }
+
+      let ended = false;
+      const finish = () => {
+        if (ended) return;
+        ended = true;
+        this.currentUtterance = null;
         if (onEnd) onEnd();
       };
 
+      utterance.onend = finish;
+      utterance.onerror = finish;
+
       window.speechSynthesis.speak(utterance);
+
+      // Mobile Safari fallback safety timer: if utterance hangs, trigger onEnd
+      const wordsCount = text.split(/\s+/).length;
+      const expectedDurationMs = Math.max(1500, (wordsCount / 2.2) * 1000 + 2000);
+      setTimeout(() => {
+        if (!ended) {
+          finish();
+        }
+      }, expectedDurationMs);
     } catch {
       if (onEnd) onEnd();
     }
   }
 
   stopSpeech() {
-    if ('speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
       } catch {
         // ignore
       }
     }
+    this.currentUtterance = null;
   }
 }
 

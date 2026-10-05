@@ -125,7 +125,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col font-sans select-none antialiased">
+    <div className="min-h-screen min-h-dvh w-full overflow-x-hidden bg-stone-100 flex flex-col font-sans select-none antialiased">
       {/* Top Header Navigation */}
       <HeaderNav
         currentScreen={currentScreen}

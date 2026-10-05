@@ -69,11 +69,11 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
               sounds.playTapSound();
               onSelectWord(wordData);
             }}
-            className="inline-flex items-center mx-0.5 px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border-b-2 border-amber-400 transition-all active:scale-95 group cursor-pointer"
+            className="inline-flex items-center mx-0.5 px-1.5 sm:px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border-b-2 border-amber-400 transition-all active:scale-95 group cursor-pointer"
             title="Tap to see meaning and hear pronunciation"
           >
             <span>{part}</span>
-            <span className="text-xs ml-1 text-amber-700 opacity-70 group-hover:opacity-100">
+            <span className="text-[10px] sm:text-xs ml-1 text-amber-700 opacity-70 group-hover:opacity-100">
               {wordData.iconEmoji}
             </span>
           </button>
@@ -118,12 +118,12 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-3 md:py-4 flex flex-col justify-between min-h-[calc(100vh-65px)]">
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 md:py-4 flex flex-col justify-between min-h-[calc(100dvh-58px)] sm:min-h-[calc(100vh-65px)]">
       {/* 2-Column Storybook Landscape Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch flex-1 my-auto">
-        {/* Left Column: Clean Story Illustration (No overlay text on image) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5 items-stretch flex-1 my-auto">
+        {/* Left Column: Clean Story Illustration (Height-responsive for mobile) */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-amber-300 bg-amber-100 aspect-4/3 group select-none">
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border-2 sm:border-4 border-amber-300 bg-amber-100 aspect-16/10 sm:aspect-4/3 max-h-[32vh] sm:max-h-[46vh] lg:max-h-none group select-none">
             <img
               src={page.illustration}
               alt={page.illustrationAlt}
@@ -133,12 +133,12 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
 
             {/* Investigation Mode Overlay & Hotspots */}
             {isInvestigating && page.hotspots && (
-              <div className="absolute inset-0 bg-stone-950/35 backdrop-blur-xs transition-opacity p-4 flex flex-col justify-between z-10">
+              <div className="absolute inset-0 bg-stone-950/35 backdrop-blur-xs transition-opacity p-3 sm:p-4 flex flex-col justify-between z-10">
                 {/* Top bar with explicit Exit/Close button */}
                 <div className="flex items-center justify-between gap-2 w-full">
-                  <div className="bg-amber-950/90 text-amber-100 px-3.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow-md">
-                    <Search className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Investigation Mode: Tap the highlighted objects!</span>
+                  <div className="bg-amber-950/90 text-amber-100 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs font-bold inline-flex items-center gap-1.5 shadow-md">
+                    <Search className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-400" />
+                    <span>Investigation Mode: Tap objects!</span>
                   </div>
 
                   {/* Explicit Close Button */}
@@ -148,11 +148,11 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                       setIsInvestigating(false);
                       setSelectedHotspot(null);
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-stone-900/90 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 shadow-md transition-colors cursor-pointer"
+                    className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-stone-900/90 hover:bg-black text-white text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-md transition-colors cursor-pointer"
                     title="Exit investigation mode"
                   >
                     <X className="w-3.5 h-3.5" />
-                    <span>Exit Mode</span>
+                    <span>Exit</span>
                   </button>
                 </div>
 
@@ -164,7 +164,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                       key={hs.id}
                       onClick={() => handleHotspotClick(hs)}
                       style={{ left: `${hs.xPercent}%`, top: `${hs.yPercent}%` }}
-                      className={`absolute -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center border-2 shadow-lg transition-transform active:scale-90 cursor-pointer ${
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 w-10 sm:w-11 h-10 sm:h-11 rounded-full flex items-center justify-center border-2 shadow-lg transition-transform active:scale-90 cursor-pointer ${
                         isMain
                           ? 'bg-amber-500/95 border-white text-white animate-bounce ring-4 ring-amber-400/50'
                           : 'bg-white/90 border-amber-400 text-amber-900 hover:scale-110'
@@ -174,7 +174,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                       {isMain ? (
                         <Sparkles className="w-5 h-5" />
                       ) : (
-                        <HelpCircle className="w-5 h-5" />
+                        <HelpCircle className="w-4 sm:w-5 h-4 sm:h-5" />
                       )}
                     </button>
                   );
@@ -182,7 +182,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
 
                 {/* Hotspot details card popup if selected */}
                 {selectedHotspot && (
-                  <div className="bg-white rounded-2xl p-4 border-2 border-amber-400 shadow-xl max-w-sm self-center text-center animate-in zoom-in-95 duration-150 relative">
+                  <div className="bg-white rounded-2xl p-3 sm:p-4 border-2 border-amber-400 shadow-xl max-w-sm self-center text-center animate-in zoom-in-95 duration-150 relative">
                     <button
                       onClick={() => setSelectedHotspot(null)}
                       className="absolute top-2 right-2 p-1 text-slate-400 hover:text-slate-700"
@@ -190,28 +190,28 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-amber-800 uppercase">
+                    <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-800 uppercase">
                       {selectedHotspot.isMainClue ? (
                         <>
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           <span>Important Mystery Clue!</span>
                         </>
                       ) : (
                         <>
-                          <Eye className="w-4 h-4 text-slate-500" />
+                          <Eye className="w-3.5 h-3.5 text-slate-500" />
                           <span>Inspecting Scene</span>
                         </>
                       )}
                     </div>
-                    <h4 className="font-story font-bold text-base text-slate-900 mt-1">
+                    <h4 className="font-story font-bold text-sm sm:text-base text-slate-900 mt-1">
                       {selectedHotspot.name}
                     </h4>
-                    <p className="text-xs text-slate-700 mt-1 leading-relaxed">
+                    <p className="text-[11px] sm:text-xs text-slate-700 mt-1 leading-relaxed">
                       {selectedHotspot.description}
                     </p>
                     {selectedHotspot.isMainClue && (
-                      <div className="mt-2 text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">
-                        🎉 Clue saved to your Detective Bag! You can now proceed.
+                      <div className="mt-1.5 text-[11px] sm:text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg">
+                        🎉 Clue saved to Detective Bag!
                       </div>
                     )}
                   </div>
@@ -221,17 +221,17 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Story Text & Interactive Controls (All text here beside image) */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-3xl p-5 md:p-6 border-2 border-amber-200/80 shadow-md">
+        {/* Right Column: Story Text & Interactive Controls */}
+        <div className="lg:col-span-5 flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 border-2 border-amber-200/80 shadow-md">
           {/* Top meta row with Location and Chapter */}
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-amber-100">
-              <div className="flex items-center gap-2">
-                <span className="bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
+            <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-amber-100">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1">
                   <span>📍</span>
                   <span>{page.locationName}</span>
                 </span>
-                <span className="font-bold text-xs uppercase tracking-wider text-amber-800">
+                <span className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-amber-800">
                   · {page.title}
                 </span>
               </div>
@@ -239,36 +239,36 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
               {/* Read Aloud Button */}
               <button
                 onClick={handleReadAloud}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                className={`flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all shadow-xs cursor-pointer ${
                   isPlayingAudio
                     ? 'bg-amber-600 text-white animate-pulse'
                     : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300'
                 }`}
                 title="Listen to story text read aloud"
               >
-                <Volume2 className="w-4 h-4" />
+                <Volume2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                 <span>{isPlayingAudio ? 'Listening...' : 'Read Aloud'}</span>
               </button>
             </div>
 
-            {/* Main story text */}
-            <div className="mt-5 sm:mt-8">
-              <div className="text-xl sm:text-2xl md:text-3xl font-story text-slate-900 leading-relaxed sm:leading-loose">
+            {/* Main story text - responsive font size for mobile */}
+            <div className="mt-3 sm:mt-6">
+              <div className="text-base sm:text-xl md:text-2xl font-story text-slate-900 leading-snug sm:leading-relaxed">
                 {renderInteractiveText()}
               </div>
             </div>
 
             {/* Vocabulary Tip notice */}
-            <div className="mt-4 pt-3 flex items-center gap-2 text-xs text-slate-500">
+            <div className="mt-2.5 pt-2 flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500">
               <span className="text-amber-600 font-bold">💡 Tip:</span>
-              <span>Tap any highlighted word to see its meaning and hear pronunciation!</span>
+              <span>Tap highlighted words to see their meaning & pronunciation!</span>
             </div>
           </div>
 
           {/* Clue status card & Mandatory Clue Notice */}
-          <div className="mt-4 space-y-2">
+          <div className="mt-3 sm:mt-4 space-y-2">
             {showClueNeededAlert && !isClueCollected && (
-              <div className="p-3 rounded-2xl bg-amber-100 border-2 border-amber-400 text-amber-950 text-xs font-bold flex items-center gap-2 animate-bounce">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-amber-100 border-2 border-amber-400 text-amber-950 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 animate-bounce">
                 <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
                 <span>Detective Alert: You must collect the clue on this page to continue!</span>
               </div>
@@ -277,14 +277,14 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
             {page.hasClueToCollect && (
               <div>
                 {isClueCollected ? (
-                  <div className="p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-200 flex items-center justify-center text-xl shrink-0">
+                  <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex items-center justify-between gap-2.5">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-xl bg-emerald-200 flex items-center justify-center text-lg sm:text-xl shrink-0">
                         {page.clue?.iconEmoji || '🔍'}
                       </div>
                       <div className="min-w-0">
-                        <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 uppercase">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-800 uppercase">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                           <span>Clue Collected! Ready for Next Page</span>
                         </div>
                         <div className="font-bold text-xs sm:text-sm text-slate-900 truncate">
@@ -299,21 +299,21 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                         setIsInvestigating(!isInvestigating);
                         setSelectedHotspot(null);
                       }}
-                      className="px-2.5 py-1 rounded-lg border border-emerald-300 text-emerald-800 text-xs font-semibold hover:bg-emerald-100 transition-colors shrink-0"
+                      className="px-2 py-1 rounded-lg border border-emerald-300 text-emerald-800 text-[11px] font-semibold hover:bg-emerald-100 transition-colors shrink-0"
                     >
-                      {isInvestigating ? 'Close Lens' : 'Re-inspect'}
+                      {isInvestigating ? 'Close' : 'Re-inspect'}
                     </button>
                   </div>
                 ) : (
-                  <div className="p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-2xl animate-bounce">🔍</span>
+                  <div className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-amber-50 border-2 border-amber-300 flex items-center justify-between gap-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl animate-bounce">🔍</span>
                       <div>
-                        <div className="text-[11px] font-bold text-amber-800 uppercase flex items-center gap-1">
+                        <div className="text-[10px] sm:text-[11px] font-bold text-amber-800 uppercase flex items-center gap-1">
                           <Lock className="w-3 h-3 text-amber-700" />
-                          <span>Clue Required to Unlock Next Page</span>
+                          <span>Clue Required to Continue</span>
                         </div>
-                        <div className="text-xs text-slate-700">
+                        <div className="text-[11px] sm:text-xs text-slate-700">
                           {isInvestigating
                             ? 'Tap the glowing clue in the picture!'
                             : 'Tap [Collect Clue] to search the scene!'}
@@ -327,9 +327,9 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
                         setIsInvestigating(!isInvestigating);
                         setSelectedHotspot(null);
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-colors shrink-0 cursor-pointer"
+                      className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-[11px] sm:text-xs font-bold shadow-xs transition-colors shrink-0 cursor-pointer"
                     >
-                      {isInvestigating ? 'Close Lens' : 'Collect Clue'}
+                      {isInvestigating ? 'Close' : 'Collect Clue'}
                     </button>
                   </div>
                 )}
@@ -339,8 +339,8 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
         </div>
       </div>
 
-      {/* Screen ② Navigation Footer */}
-      <div className="mt-4 pt-3 border-t border-amber-200/80 flex items-center justify-between gap-4">
+      {/* Screen ② Navigation Footer (Always compact & accessible on mobile) */}
+      <div className="mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t border-amber-200/80 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
         {/* Back Button */}
         <button
           onClick={() => {
@@ -348,7 +348,7 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
             onPrevPage();
           }}
           disabled={page.pageNumber === 1}
-          className={`flex items-center gap-1 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`flex items-center gap-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
             page.pageNumber === 1
               ? 'opacity-40 cursor-not-allowed text-stone-400 bg-stone-100'
               : 'text-amber-900 bg-white border border-amber-300 hover:bg-amber-100/70 shadow-xs cursor-pointer'
@@ -365,9 +365,9 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
               sounds.playTapSound();
               setIsInvestigating(true);
             }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md shadow-amber-600/20 active:scale-95 transition-all animate-pulse-subtle cursor-pointer"
+            className="flex items-center gap-1.5 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-600/20 active:scale-95 transition-all animate-pulse-subtle cursor-pointer"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
             <span>Search & Collect Clue</span>
           </button>
         )}
@@ -376,16 +376,16 @@ export const StoryPageScreen: React.FC<StoryPageScreenProps> = ({
         {page.hasClueToCollect && !isClueCollected ? (
           <button
             onClick={handleNextClick}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 text-amber-950 font-bold text-sm shadow-xs active:scale-95 transition-all cursor-pointer animate-pulse"
+            className="flex items-center gap-1 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 text-amber-950 font-bold text-xs sm:text-sm shadow-xs active:scale-95 transition-all cursor-pointer animate-pulse"
             title="Collect the clue first to proceed!"
           >
-            <Lock className="w-4 h-4 text-amber-700" />
+            <Lock className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-700" />
             <span>Collect Clue First</span>
           </button>
         ) : (
           <button
             onClick={handleNextClick}
-            className="flex items-center gap-1 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md shadow-amber-600/20 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center gap-1 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-600/20 active:scale-95 transition-all cursor-pointer"
           >
             <span>Next</span>
             <ChevronRight className="w-4 h-4" />
